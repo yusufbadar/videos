@@ -1,0 +1,62 @@
+/* Pyrovue on video. Colours are the product's Night Shift palette
+   (docs/DESIGN.md in the pyrovue repo): near-black page, cool white type,
+   slate steps between. No yellow or orange, no gradients on type, no glows
+   around UI. Status colours only mean status. */
+@font-face { font-family: 'Fraunces'; src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: 'Fraunces'; src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: 'Geist'; src: url('../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Geist Mono'; src: url('../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+
+:root {
+  --black: #020203;
+  --void: #181a1f;
+  --surface: #22252c;
+  --surface-2: #2c3039;
+  --slate: #3a404b;
+  --fg-4: #6f7a8a;
+  --fg-3: #a7afbc;
+  --fg-2: #c4cad4;
+  --fg: #f3f5f9;
+  --paper: #f9fafc;
+  --ink: #181a1f;
+  --live: #7fd1a6;
+  --pulse: #b9b0f0;
+  --danger: #f0888f;
+  --ice: #bcd6ff;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+body { font-family: var(--sans); color: var(--fg); -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+#stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; }
+#stage.solid { background: var(--void); }
+#stage.black { background: var(--black); }
+#stage.paper { background: var(--paper); color: var(--ink); }
+.abs { position: absolute; }
+.fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.serif { font-family: var(--serif); font-weight: 300; letter-spacing: -0.02em; }
+.mono { font-family: var(--mono); }
+.wordmark { font-family: var(--serif); font-weight: 300; font-style: italic; letter-spacing: -0.03em; }
+
+/* Captions: heavy sans with a hard shadow so they hold over any footage. */
+.caps { font-family: var(--sans); font-weight: 800; letter-spacing: -0.025em; line-height: 1.04; }
+.cap-word { display: inline-block; color: rgba(243, 245, 249, 0.42); text-shadow: 0 4px 0 rgba(2, 2, 3, 0.85), 0 0 28px rgba(2, 2, 3, 0.9); transition: none; }
+.cap-word.said { color: var(--fg); }
+.cap-word.now { transform: scale(1.06); }
+.cap-word.em.said { color: var(--ice); }
+.caps.box .cap-line { display: flex; justify-content: center; gap: 0.25em; }
+.caps.box .cap-word { background: var(--fg); color: var(--ink); padding: 0.08em 0.28em 0.12em; border-radius: 14px; text-shadow: none; opacity: 0.25; }
+.caps.box .cap-word.said { opacity: 1; color: var(--ink); }
+.caps.serifcap { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; }
+
+/* The product's address bar, used whenever the URL trick is shown. */
+.urlbar { font-family: var(--mono); font-size: 44px; background: var(--paper); color: var(--ink); border-radius: 22px; padding: 30px 38px; white-space: nowrap; box-shadow: 0 30px 80px rgba(2, 2, 3, 0.55); }
+.urlbar b { font-weight: 600; background: var(--ink); color: var(--paper); padding: 4px 10px; border-radius: 8px; }
+
+/* Film grain overlay: put <div class="grain"></div> last in #stage. */
+.grain { position: absolute; inset: -200px; pointer-events: none; z-index: 90; opacity: 0.11; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+.vignette { position: absolute; inset: 0; pointer-events: none; z-index: 80; background: radial-gradient(ellipse at center, transparent 55%, rgba(2, 2, 3, 0.55) 100%); }

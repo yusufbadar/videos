@@ -1,0 +1,5 @@
+faster-whisper
+librosa
+soundfile
+numpy
+pillow

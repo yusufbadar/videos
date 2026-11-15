@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8">
+<!-- v01: the aura edit. Footage sits in a band at y 560-1168; this layer is the
+     lockup above it, the beat-synced lines below it, and the end card. -->
+<link rel="stylesheet" href="../../lib/brand.css">
+<style>
+  .lock { position:absolute; left:0; right:0; top:262px; text-align:center; }
+  .lock .big { font-family:var(--serif); font-style:italic; font-weight:300; font-size:156px; letter-spacing:-0.035em; line-height:1; }
+  .lock .sub { font-family:var(--mono); font-size:35px; color:var(--fg-3); margin-top:34px; }
+  .lock .sub b { color:var(--fg); font-weight:500; }
+  .beat { position:absolute; left:0; right:0; top:1236px; text-align:center; font-weight:800; font-size:112px; letter-spacing:-0.035em; line-height:1; opacity:0; }
+  .beat s { text-decoration:none; position:relative; }
+  .beat s::after { content:''; position:absolute; left:-3%; right:-3%; top:54%; height:9px; background:var(--fg); transform:scaleX(var(--k,0)); transform-origin:left; }
+  .rule { position:absolute; left:60px; right:60px; height:1.5px; background:rgba(111,122,138,.38); }
+</style>
+<div id="stage">
+  <div class="lock">
+    <div class="big">run any repo.</div>
+    <div class="sub"><b>pyrovue.com/</b>github.com/any/repo</div>
+  </div>
+  <div class="rule" style="top:558px"></div>
+  <div class="rule" style="top:1169px"></div>
+</div>
+<script type="module">
+import { gsap, run, el, split } from '../../lib/stage.js';
+import { endcard } from '../../lib/parts.js';
+const B = window.DATA.beats;                      // beat grid of the track
+const tl = gsap.timeline({ paused: true });
+
+// Lockup settles in over the first beat; it is fully readable on frame 1.
+const big = document.querySelector('.lock .big');
+tl.from(split(big), { y: 34, duration: 0.5, stagger: 0.05, ease: 'pv' }, 0)
+  .from('.lock .sub', { opacity: 0.0, y: 16, duration: 0.45, ease: 'pv' }, 0.18)
+  .from('.rule', { scaleX: 0, duration: 0.7, ease: 'pv', stagger: 0.08 }, 0);
+
+// One short line per beat under the footage. Each pops on its beat and is
+// replaced on the next one listed.
+const lines = [
+  [B[2], 'git clone', true], [B[3], 'npm install', true], [B[4], 'node v16?', true], [B[5], 'it broke', true],
+  [B[8], 'no clone.'], [B[10], 'no install.'], [B[12], 'no setup.'],
+  [B[16], 'paste a link.'], [B[21], 'it runs.'],
+];
+const end = B[25];                                 // the hit the fireworks land on
+lines.forEach(([t, text, struck], i) => {
+  const n = el('div', 'beat', struck ? `<s>${text}</s>` : text);
+  if (struck) { n.style.fontFamily = 'var(--mono)'; n.style.fontWeight = 500; n.style.fontSize = '88px'; n.style.color = 'var(--fg-2)'; n.style.top = '1248px'; }
+  const until = i + 1 < lines.length ? Math.min(lines[i + 1][0], t + 2.6) : end;
+  tl.fromTo(n, { opacity: 0, y: 30, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: 'pvPop' }, t)
+    .set(n, { opacity: 0 }, until);
+  if (struck) tl.to(n.querySelector('s'), { '--k': 1, duration: 0.16, ease: 'pv' }, t + 0.3);
+});
+
+endcard(tl, end, { fade: 0.5, hold: window.DATA.duration - end });
+document.getElementById('stage').insertAdjacentHTML('beforeend', '<div class="grain"></div>');
+run(tl, window.DATA.duration);
+</script>
