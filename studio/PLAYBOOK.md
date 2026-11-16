@@ -74,8 +74,10 @@ Every video is recognisably the same channel:
   `0eaa26d8-0130-44a5-b7c6-403bf76c1576` (dark mark), `bfbba666-59ee-430c-9d8b-09aaefe776f4` (light mark). Pass it as
   an image reference whenever the mark has to appear in a generated image; say "the exact two-chevron logo mark
   from the reference image".
-- **Real product footage** is in `footage/` (captured from pyrovue.com and the dev build). Use it whenever the
-  product is shown. Never show an invented UI as if it were the product.
+- **Real product footage** is in `footage/`; read `footage/README.md` first. Clips 01 to 12 and 24 are the live
+  site. Clips 20 to 25 are the real workspace UI on fixture data: never quote a time from them or present them as a
+  named real repository. Use footage whenever the product is shown. Never show an invented UI as if it were the
+  product.
 
 ## Writing
 

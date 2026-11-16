@@ -3,10 +3,20 @@
     "start": 2957.2,
     "subscription_ends": "2026-11-30",
     "checks": [
-      { "at": "2026-11-15T23:58Z", "balance": 2784.3, "note": "after v01, cast frames, bake-off, v02 and v04 clips and music" }
+      {
+        "at": "2026-11-15T23:58Z",
+        "balance": 2784.3,
+        "note": "after v01, cast frames, bake-off, v02 and v04 clips and music"
+      }
     ]
   },
-  "slots_et": ["08:42", "10:52", "13:12", "16:18", "19:07"],
+  "slots_et": [
+    "08:42",
+    "10:52",
+    "13:12",
+    "16:18",
+    "19:07"
+  ],
   "videos": [
     {
       "id": "2026-11-16-v01-aura",
@@ -20,6 +30,36 @@
       "audio": "track supplied by the owner from another creator's reel; may be muted or claimed",
       "notes": "Genjutsu motion transfer at 480p (job 8d94268f) from ten brand stills, letterboxed in a 9:16 frame",
       "results": {}
+    },
+    {
+      "id": "2026-11-16-v02-pov",
+      "format": "pov",
+      "hook": "README: \"setup takes 2 minutes\"",
+      "file": "reels/2026-11-16-v02-pov.mp4",
+      "credits": 41,
+      "ai_flag": true,
+      "scheduled": "2026-11-16T13:12:00-05:00",
+      "metricool_id": 429437669,
+      "audio": "generated (elevenlabs_music_v2_5), one 2.5 s bar per beat",
+      "notes": "four reaction shots of the man (kling3_0_turbo x3, grok lite x1), cutaway to the dev-build boot screens, URL trick",
+      "results": {}
+    },
+    {
+      "id": "2026-11-16-v04-unbox",
+      "format": "satisfying",
+      "hook": "every repo should open like this.",
+      "file": "reels/2026-11-16-v04-unbox.mp4",
+      "credits": 22,
+      "ai_flag": true,
+      "scheduled": "2026-11-16T16:18:00-05:00",
+      "metricool_id": 429437720,
+      "audio": "generated (elevenlabs_music_v2_5)",
+      "notes": "box lid lift and paper diorama (kling3_0_turbo), then the real code map of Pyrovue's own repo",
+      "results": {}
     }
-  ]
+  ],
+  "scheduled_tasks": {
+    "evening_production": "trig_01Vh7ZMSqeNxzMC1Bmt3qPUZ (20:23 ET daily)",
+    "midday_review_and_bank": "trig_01EGBttavWbPghvJgUk8WGjm (13:41 ET daily)"
+  }
 }
