@@ -1,0 +1,176 @@
+{
+  "note": "Everything generated that can be reused. Higgsfield job ids can be passed straight back as media values while the subscription lasts; local files are the durable copy.",
+  "media": {
+    "cast_man_sheet": "edd1438a-4c56-4e89-9b10-bfbe4ca00497",
+    "cast_woman_sheet": "95698770-f6a5-4e7d-9d5c-fb50dfc862fb",
+    "logo_white_on_black": "f74049de-ffcc-47c0-b444-2cd06d8672b7",
+    "logo_dark": "0eaa26d8-0130-44a5-b7c6-403bf76c1576",
+    "logo_light": "bfbba666-59ee-430c-9d8b-09aaefe776f4",
+    "aura_reference_video": "89c14747-f64f-4f51-bf31-30e299d307e5",
+    "aura_reference_audio": "a7cd935a-55f1-4ecc-a2ff-6d2a03bd4ba8"
+  },
+  "stills": [
+    {
+      "job": "db0b8d11-0ca2-4aae-bf46-047903ab0fa5",
+      "file": "bank/stills/aura-01.jpg",
+      "shows": "ink-brush circle with the mark, on white, 16:9"
+    },
+    {
+      "job": "cf2c5b71-603f-44f9-bb83-28de0274be68",
+      "file": "bank/stills/aura-02.jpg",
+      "shows": "tiny developer with glowing laptop on black, 16:9"
+    },
+    {
+      "job": "33ede757-d7e8-4f46-99ee-bc721a9cc4bb",
+      "file": "bank/stills/aura-03.jpg",
+      "shows": "hands holding a black laptop with the glowing mark, 16:9"
+    },
+    {
+      "job": "15472fab-1915-4124-bc54-e6e400f35e93",
+      "file": "bank/stills/aura-04.jpg",
+      "shows": "blueprint of the box, 16:9"
+    },
+    {
+      "job": "a24259d0-7aae-45fc-846c-5a3a77fbb069",
+      "file": "bank/stills/aura-05.jpg",
+      "shows": "chalkboard: url, box, running, 16:9"
+    },
+    {
+      "job": "d9d07a15-daea-43c3-b45c-c4cc26dd9a93",
+      "file": "bank/stills/aura-06.jpg",
+      "shows": "snowy streetlamp, three developers outlined in white neon, 16:9"
+    },
+    {
+      "job": "86a044dd-b8aa-4465-8d4d-46dde6daa575",
+      "file": "bank/stills/aura-07.jpg",
+      "shows": "wall of CRT monitors with the mark in the centre, 16:9"
+    },
+    {
+      "job": "45cd7934-7ee7-4875-88b2-375fe694306a",
+      "file": "bank/stills/aura-08.jpg",
+      "shows": "neon mark with lightning, 16:9"
+    },
+    {
+      "job": "ce2568ba-87be-473a-8f46-d5f64d8d9215",
+      "file": "bank/stills/aura-09.jpg",
+      "shows": "fireworks forming the mark, 16:9"
+    },
+    {
+      "job": "682d6770-8749-48be-8ccc-00cfd94053ff",
+      "file": "bank/stills/aura-10.jpg",
+      "shows": "finger pressing a glowing logo key on a black keyboard, 16:9"
+    },
+    {
+      "job": "36050c9c-61e0-4153-8afd-4c4055becd6a",
+      "file": "bank/stills/man-desk-confident.jpg",
+      "shows": "the man, grey hoodie, desk at night, cracking knuckles, 9:16"
+    },
+    {
+      "job": "2f8f37d3-d4bd-4135-9c0b-c2e0dc1b29eb",
+      "file": "bank/stills/man-desk-errors.jpg",
+      "shows": "the man lit red by errors, 9:16"
+    },
+    {
+      "job": "480fc976-6715-4964-b9a3-6fad73d0a6f8",
+      "file": "bank/stills/man-desk-stunned.jpg",
+      "shows": "the man sitting up, stunned, lit white, 9:16"
+    },
+    {
+      "job": "cccef69c-e278-4e6e-9b0c-61a1517df9bc",
+      "file": "bank/stills/box-closed.jpg",
+      "shows": "black box with the mark, hands on the lid, 9:16"
+    },
+    {
+      "job": "32c1f935-9a5d-42c8-84ef-8f11d927886a",
+      "file": "bank/stills/box-diorama.jpg",
+      "shows": "open box with a paper diorama of browser windows, 9:16"
+    },
+    {
+      "job": "0bb99f13-f8b0-4215-b4a2-7bc903c56653",
+      "file": "bank/stills/man-desk-despair.jpg",
+      "shows": "the man, head on the desk at 3 AM, mugs, 9:16"
+    }
+  ],
+  "clips": [
+    {
+      "job": "6b8cb8ff-1a21-463f-a171-c44436033cba",
+      "model": "kling3_0_turbo",
+      "file": "bank/clips/man-knuckles-typing.mp4",
+      "shows": "the man cracks his knuckles, smirks, starts typing",
+      "used_in": [
+        "v02"
+      ]
+    },
+    {
+      "job": "2b5e2c3e-dfb0-4844-9f73-05c6f17597b8",
+      "model": "grok_video_v15_lite",
+      "file": "bank/clips/man-thumbs-typing.mp4",
+      "shows": "same frame, odd thumbs-up then typing",
+      "used_in": []
+    },
+    {
+      "job": "5baeddb2-cd2c-4e45-8556-b5d9c650e6f7",
+      "model": "seedance_2_0",
+      "file": "bank/clips/man-smile-typing.mp4",
+      "shows": "same frame, smiles and types",
+      "used_in": []
+    },
+    {
+      "job": "b2dacfc5-af97-4954-91b5-0e746b98535e",
+      "model": "kling3_0_turbo",
+      "file": "bank/clips/man-stunned-laugh.mp4",
+      "shows": "the man stunned, then laughing in relief",
+      "used_in": [
+        "v02"
+      ]
+    },
+    {
+      "job": "b751287c-5a9e-4ac3-99de-fd40ab7acdec",
+      "model": "kling3_0_turbo",
+      "file": "bank/clips/box-lid-lift.mp4",
+      "shows": "hands lift the lid, white light pours out",
+      "used_in": [
+        "v04"
+      ]
+    },
+    {
+      "job": "552f7ad4-69f8-4ab2-81d0-0322855d5437",
+      "model": "kling3_0_turbo",
+      "file": "bank/clips/box-diorama-rise.mp4",
+      "shows": "paper diorama of browser windows rises from the box",
+      "used_in": [
+        "v04"
+      ]
+    },
+    {
+      "job": "bc151467-ab54-45e3-944b-ef54bf6d4bb7",
+      "model": "grok_video_v15_lite",
+      "file": "bank/clips/man-errors-facepalm.mp4",
+      "shows": "the man lit red by errors, grimaces, hand over face",
+      "used_in": [
+        "v02"
+      ]
+    },
+    {
+      "job": "42f5434a-8222-48a8-88f1-1c11c8b65f0f",
+      "model": "kling3_0_turbo",
+      "file": "bank/clips/man-despair-desk.mp4",
+      "shows": "the man with his head on the desk among mugs, eyes closing",
+      "used_in": [
+        "v02"
+      ]
+    }
+  ],
+  "music": [
+    {
+      "job": "84ed6fa5-f419-43f6-bd5b-52fbc1b5ebad",
+      "file": "bank/music/sneaky-comedy-16s.mp3",
+      "mood": "sneaky comedy, 96 BPM, ends on a bright stab"
+    },
+    {
+      "job": "2bc6812a-6b6b-4d5a-b9bd-3b87a35c3e59",
+      "file": "bank/music/box-reveal-13s.mp3",
+      "mood": "soft sub swell, chimes, airy pad, no drums"
+    }
+  ]
+}

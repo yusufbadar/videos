@@ -57,10 +57,12 @@ export function urlTrick(tl, at, { repo = 'github.com/you/app', y = 860, size = 
 // Hook line: big, at most six words, on screen from the first frame.
 export function hook(tl, text, { at = 0, out = 2.2, y = 420, size = 104, serif = false, color } = {}) {
   const h = el('div', 'hook ' + (serif ? 'serif' : ''));
-  h.style.cssText = `position:absolute;left:${SAFE.left + 20}px;width:${SAFE.right - SAFE.left - 20}px;top:${y}px;font-size:${size}px;line-height:1.02;font-weight:${serif ? 300 : 800};letter-spacing:-0.03em;z-index:60;text-shadow:0 4px 0 rgba(2,2,3,.8),0 0 40px rgba(2,2,3,.8);${color ? 'color:' + color : ''}`;
+  h.style.cssText = `position:absolute;left:${SAFE.left + 20}px;width:${SAFE.right - SAFE.left - 20}px;top:${y}px;font-size:${size}px;line-height:1.02;font-weight:${serif ? 380 : 800};letter-spacing:-0.03em;z-index:60;text-shadow:0 4px 0 rgba(2,2,3,.8),0 0 40px rgba(2,2,3,.8);${color ? 'color:' + color : ''}`;
   h.textContent = text;
   const words = split(h);
-  // The first frame already shows the whole line; only a small settle moves.
+  // A line that starts later stays hidden until its time. The opening line is
+  // whole on the first frame; only a small settle moves.
+  if (at > 0) { h.style.opacity = 0; tl.set(h, { opacity: 1 }, at); }
   tl.from(words, { y: 26, scale: 0.96, duration: 0.32, stagger: 0.035, ease: 'pvPop' }, at);
   if (out !== null) tl.to(h, { opacity: 0, y: -24, duration: 0.22, ease: 'pvIn' }, out);
   return h;

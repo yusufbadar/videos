@@ -1,0 +1,201 @@
+<!doctype html><meta charset="utf-8">
+<!-- v03: cold-open demo, real product footage only, cut to a 120 BPM track.
+     Every shot is an image sequence of a screen take with a virtual camera on it
+     (punch-ins, whips, slow pushes); cuts and text hits sit on the beat grid.
+
+     FRAMES: the takes live outside the repo (about 300 MB of JPGs). To put them
+     back, extract each take to frames/<take>/f_%04d.jpg next to this file:
+       ffmpeg -i <take>.mp4 -q:v 2 -start_number 1 frames/<take>/f_%04d.jpg
+     Takes (portrait, 540x960 CSS px at 3x = 1620x2880; `type` is 600x1068 at 3x):
+       type   pyrovue.com hero, github.com/SafdarJamal/vite-template-react typed
+       flowP  workspace setup to running, Preview tab (+ three clicks on the counter)
+       flowS  the same run on the Setup tab (the checklist)
+       tabs   Tour tab, "Start the tour", "Next"
+       map    Map tab, then the Layers button
+       files  Files tab, sidebar, src, App.jsx
+       term   Terminal: ls, node -v, npm run build
+     Recorder and masters: scratchpad v03/rec (myrec.js, out/*.mp4). -->
+<link rel="stylesheet" href="../../lib/brand.css">
+<style>
+  .shot { position:absolute; inset:0; overflow:hidden; visibility:hidden; background:var(--black); }
+  .shot.void { background:var(--void); }
+  .cam { position:absolute; left:0; top:0; transform-origin:0 0; overflow:hidden; }
+  .cam img { display:block; width:100%; height:100%; }
+  .ov { position:absolute; left:0; top:0; z-index:40; pointer-events:none; }
+  .cursor { width:54px; height:64px; margin:-4px 0 0 -6px; filter:drop-shadow(0 6px 10px rgba(2,2,3,.55)); }
+  .ring { width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; border:5px solid var(--fg); opacity:0; }
+  .ring.dark { border-color:var(--ink); }
+  .tabring { border:4px solid var(--ice); border-radius:16px; background:rgba(188,214,255,.14); opacity:0; }
+  .scrim { position:absolute; left:0; right:0; top:0; height:760px; z-index:30; background:linear-gradient(to bottom, var(--void) 0, var(--void) 590px, rgba(24,26,31,0) 760px); }
+  .card { position:absolute; z-index:60; font-weight:800; letter-spacing:-0.03em; line-height:1.04; opacity:0; white-space:nowrap; }
+  .card.pill { background:var(--black); color:var(--fg); font-size:92px; padding:26px 46px 34px 40px; border-radius:30px; box-shadow:0 24px 70px rgba(2,2,3,.38); }
+  .card .dot { display:inline-block; width:30px; height:30px; border-radius:50%; background:var(--live); margin-right:26px; vertical-align:0.12em; }
+  .card.plain { font-size:100px; text-shadow:0 4px 0 rgba(2,2,3,.85), 0 0 44px rgba(2,2,3,.9); }
+  .card.plain em { font-style:normal; color:var(--ice); }
+</style>
+<div id="stage" class="black"></div>
+<script type="module">
+import { gsap, run, el, onSeek } from '../../lib/stage.js';
+import { endcard, hook } from '../../lib/parts.js';
+gsap.config({ force3D: false });
+const B = window.DATA.beats;                       // kick grid: one beat every 0.5 s
+const DUR = window.DATA.duration;
+const tl = gsap.timeline({ paused: true });
+const stage = document.getElementById('stage');
+const shots = [], overlays = [];
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// A shot: one take, shown from `at` to `until`. `frames` is a time-remap,
+// [[videoTime, sourceFrame], ...], linear in between. The camera `c` is in the
+// take's CSS pixels: point (cx, cy) sits at screen (sx, sy), magnified M times.
+function shot({ take, at, until, frames, cam, css = [540, 960], dsf = 3, cls = '' }) {
+  const node = el('div', 'shot ' + cls);
+  const camEl = el('div', 'cam', '', node);
+  camEl.style.width = css[0] * dsf + 'px'; camEl.style.height = css[1] * dsf + 'px';
+  const img = el('img', '', undefined, camEl);
+  const s = { node, camEl, img, take, at, until, frames, dsf, c: { M: 2, cx: css[0] / 2, cy: 0, sx: 540, sy: 130, r: 44, ...cam } };
+  shots.push(s);
+  return s;
+}
+const move = (s, t, dur, to, ease = 'pv') => tl.to(s.c, { ...to, duration: dur, ease }, t);
+// Wide "window" framing: the whole portrait UI with its top edge at y 130.
+const WIDE = { M: 2, cx: 270, cy: 0, sx: 540, sy: 130 };
+
+function frameAt(s, t) {
+  const f = s.frames;
+  if (t <= f[0][0]) return f[0][1];
+  for (let i = 1; i < f.length; i++) if (t < f[i][0]) return lerp(f[i - 1][1], f[i][1], (t - f[i - 1][0]) / (f[i][0] - f[i - 1][0]));
+  return f[f.length - 1][1];
+}
+// Things pinned to a point (or a rect) of a take, so they ride the camera.
+function pin(s, node, x, y, w, h) { const o = { s, node, x, y, w, h }; node.classList.add('ov'); s.node.appendChild(node); overlays.push(o); return o; }
+
+onSeek((t) => {
+  for (const s of shots) {
+    const on = t >= s.at - 1e-6 && t < s.until - 1e-6;
+    s.node.style.visibility = on ? 'visible' : 'hidden';
+    if (!on) continue;
+    const src = `frames/${s.take}/f_${String(Math.round(frameAt(s, t)) + 1).padStart(4, '0')}.jpg`;
+    if (s.img.getAttribute('src') !== src) s.img.setAttribute('src', src);
+    const { M, cx, cy, sx, sy, r } = s.c, k = M / s.dsf;
+    s.camEl.style.transform = `translate(${(sx - cx * M).toFixed(2)}px, ${(sy - cy * M).toFixed(2)}px) scale(${k.toFixed(5)})`;
+    s.camEl.style.borderRadius = `${r / k}px ${r / k}px 0 0`;
+  }
+  for (const o of overlays) {
+    const { M, cx, cy, sx, sy } = o.s.c;
+    o.node.style.left = (sx + (o.x - cx) * M).toFixed(2) + 'px';
+    o.node.style.top = (sy + (o.y - cy) * M).toFixed(2) + 'px';
+    if (o.w) { o.node.style.width = (o.w * M).toFixed(1) + 'px'; o.node.style.height = (o.h * M).toFixed(1) + 'px'; }
+  }
+});
+
+const ARROW = '<svg viewBox="0 0 27 32" width="54" height="64"><path d="M3 2 L3 25 L9.2 19.4 L13.4 29.2 L17.6 27.4 L13.5 17.8 L22 17.6 Z" fill="#f3f5f9" stroke="#020203" stroke-width="2" stroke-linejoin="round"/></svg>';
+// A pointer that travels (in take pixels) and clicks: path = [[t, x, y], ...].
+function pointer(s, path, clicks = [], { dark = false } = {}) {
+  const c = pin(s, document.createElement('div'), path[0][1], path[0][2]);
+  c.node.innerHTML = `<div class="cursor">${ARROW}</div>`;
+  const inner = c.node.firstChild;
+  for (let i = 1; i < path.length; i++) tl.to(c, { x: path[i][1], y: path[i][2], duration: path[i][0] - path[i - 1][0], ease: 'power2.inOut' }, path[i - 1][0]);
+  clicks.forEach((t) => {
+    const p = path.filter((q) => q[0] <= t + 1e-6).pop();
+    const r = pin(s, document.createElement('div'), p[1], p[2]);
+    r.node.innerHTML = `<div class="ring ${dark ? 'dark' : ''}"></div>`;
+    tl.fromTo(r.node.firstChild, { scale: 0.25, opacity: 1 }, { scale: 1.25, opacity: 0, duration: 0.36, ease: 'power2.out' }, t)
+      .to(inner, { scale: 0.8, duration: 0.06, ease: 'power2.out' }, t - 0.05)
+      .to(inner, { scale: 1, duration: 0.16, ease: 'pvPop' }, t + 0.02);
+  });
+  return c;
+}
+// The tab that was just "clicked": a soft ice outline that pulses once on the cut.
+function tabHit(s, t, [x, y, w, h]) {
+  const o = pin(s, document.createElement('div'), x - 3, y - 2, w + 6, h + 4);
+  o.node.classList.add('tabring');
+  tl.fromTo(o.node, { opacity: 1 }, { opacity: 0, duration: 0.42, ease: 'power2.in' }, t);
+}
+function card(html, cls, x, y, at, until) {
+  const n = el('div', 'card ' + cls, html);
+  n.style.left = x + 'px'; n.style.top = y + 'px';
+  tl.fromTo(n, { opacity: 0, y: 34, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.24, ease: 'pvPop' }, at).set(n, { opacity: 0 }, until);
+  return n;
+}
+
+// ---------------------------------------------------------------- 1. the link
+// 0.0 to 2.0 (beats 0-3). The link is typed, the repo resolves on beat 3, the
+// pointer lands on "Run it" and the click is the cut on beat 4.
+const s1 = shot({ take: 'type', css: [600, 1068], cls: 'void', at: 0, until: B[4],
+  frames: [[0, 20], [1.2, 63], [B[3], 75], [B[4], 90]],
+  cam: { M: 2.3, cx: 246, cy: 420, sx: 540, sy: 850, r: 0 } });
+el('div', 'scrim', '', s1.node);
+move(s1, 0, 2.0, { M: 2.62, cx: 428, cy: 436 }, 'power1.inOut');
+pointer(s1, [[0.95, 640, 640], [1.72, 524, 414]], [B[4] - 0.1]);
+const h = hook(tl, 'run it before you clone it.', { y: 268, size: 112, out: null });
+h.querySelectorAll('.w')[2].style.color = 'var(--ice)';
+tl.set(h, { opacity: 0 }, B[4]);
+
+// ------------------------------------------------------------- 2. the box boots
+// 2.0 to 3.0: the box assembles; the label flips to the next step on beat 5.
+const s2 = shot({ take: 'flowP', at: B[4], until: B[6], frames: [[B[4], 2], [B[5], 36], [B[6], 70]],
+  cam: { M: 2.3, cx: 270, cy: 520, sx: 480, sy: 850 } });
+move(s2, B[4], 0.38, { M: 3.0 });
+move(s2, B[4] + 0.38, 0.62, { M: 3.14 }, 'none');
+// 3.0 to 4.0: the checklist, three ticks on the sixteenths.
+const s3 = shot({ take: 'flowS', at: B[6], until: B[8], frames: [[B[6], 60], [B[6] + 0.25, 73], [B[7], 106], [B[7] + 0.25, 214], [B[8], 224]],
+  cam: { M: 2.5, cx: 172, cy: 205, sx: 500, sy: 800 } });
+move(s3, B[6], 0.3, { M: 2.95 });
+move(s3, B[6] + 0.3, 0.7, { M: 3.1, cy: 262 }, 'power1.inOut');
+// 4.0 to 7.0: launch and verify, then the app answers on beat 10.
+const s4 = shot({ take: 'flowP', at: B[8], until: B[14], frames: [[B[8], 214], [B[10], 277], [B[12], 323], [B[13], 338], [B[14], 353]],
+  cam: { M: 3.5, cx: 270, cy: 590, sx: 480, sy: 850 } });
+move(s4, B[8], 0.3, { M: 3.05 });
+move(s4, B[8] + 0.3, 0.7, { M: 3.3 }, 'power1.in');
+move(s4, B[10], 0.4, WIDE);                                   // whip out: it is running
+move(s4, B[10] + 0.4, 0.1, { M: 2.03 }, 'none');
+move(s4, B[11], 0.34, { M: 2.9, cx: 176, cy: 300, sx: 500, sy: 720 });  // punch in on the page
+move(s4, B[11] + 0.34, 1.16, { M: 3.08 }, 'none');
+pointer(s4, [[B[11], 330, 470], [B[12] - 0.08, 100, 362]], [B[12], B[13]], { dark: true });
+card('<span class="dot"></span>it\'s running.', 'pill', 100, 1150, B[10], B[14]);
+
+// ----------------------------------------------------------------- 3. the tabs
+// Each tab lands on a beat: wide for a moment with the tab lit, then in.
+// Tour, 7.0 to 8.0.
+const s5 = shot({ take: 'tabs', at: B[14], until: B[15], frames: [[B[14], 34], [B[15], 60]], cam: { ...WIDE } });
+tabHit(s5, B[14], [177, 58, 67, 32]);
+move(s5, B[14] + 0.08, 0.34, { M: 2.75, cx: 196, cy: 262, sx: 500, sy: 800 });
+move(s5, B[14] + 0.42, 0.08, { M: 2.78 }, 'none');
+const s6 = shot({ take: 'tabs', at: B[15], until: B[16], frames: [[B[15], 178], [B[16], 200]], cam: { M: 2.2, cx: 250, cy: 330, sx: 500, sy: 800 } });
+move(s6, B[15], 0.3, { M: 2.62, cy: 400 });
+move(s6, B[15] + 0.3, 0.2, { M: 2.68 }, 'none');
+// Map, 8.0 to 10.0: the graph lays itself out, then Layers on beat 18.
+const s7 = shot({ take: 'map', at: B[16], until: B[18], frames: [[B[16], 34], [B[18], 84]], cam: { ...WIDE } });
+tabHit(s7, B[16], [260, 58, 67, 32]);
+move(s7, B[16] + 0.08, 0.36, { M: 2.5, cx: 190, cy: 505, sx: 500, sy: 830 });
+move(s7, B[16] + 0.44, 0.06, { M: 2.52 }, 'none');
+tl.set(s7.c, { M: 3.35, cx: 200, cy: 490 }, B[17]);           // jump cut closer on the beat
+move(s7, B[17], 0.5, { M: 3.6 }, 'none');
+const s8 = shot({ take: 'map', at: B[18], until: B[20], frames: [[B[18], 122], [B[20], 168]], cam: { M: 2.2, cx: 270, cy: 330, sx: 540, sy: 860, r: 0 } });
+tabHit(s8, B[18], [373, 102, 40, 28]);
+move(s8, B[18], 0.5, { M: 2.3 }, 'none');
+tl.set(s8.c, { M: 3.0, cx: 150, cy: 300, sx: 480, sy: 820 }, B[19]);
+move(s8, B[19], 0.5, { M: 3.2, cy: 330 }, 'none');
+// Files, 10.0 to 11.0: the tree, then App.jsx.
+const s9 = shot({ take: 'files', at: B[20], until: B[21], frames: [[B[20], 80], [B[21], 108]], cam: { ...WIDE } });
+tabHit(s9, B[20], [330, 58, 69, 32]);
+move(s9, B[20] + 0.08, 0.32, { M: 2.9, cx: 170, cy: 250, sx: 500, sy: 800 });
+move(s9, B[20] + 0.4, 0.1, { M: 2.94 }, 'none');
+pointer(s9, [[B[20], 300, 420], [B[20] + 0.2, 80, 240], [B[20] + 0.3, 80, 240], [B[21] - 0.04, 110, 268]], [B[20] + 0.23, B[21] - 0.03]);
+const s10 = shot({ take: 'files', at: B[21], until: B[22], frames: [[B[21], 122], [B[22], 150]], cam: { M: 2.5, cx: 190, cy: 300, sx: 500, sy: 800 } });
+move(s10, B[21], 0.3, { M: 3.0, cx: 178, cy: 292 });
+move(s10, B[21] + 0.3, 0.2, { M: 3.06 }, 'none');
+// Terminal, 11.0 to 13.0: a command per beat; the build finishes into the last hit.
+const s11 = shot({ take: 'term', at: B[22], until: B[26], frames: [[B[22], 8], [B[23], 46], [B[24], 87], [B[25], 121], [B[26] - 0.13, 206], [B[26], 212]], cam: { ...WIDE } });
+tabHit(s11, B[22], [300, 58, 78, 32]);
+move(s11, B[22] + 0.08, 0.34, { M: 2.62, cx: 203, cy: 150, sx: 540, sy: 560 });
+move(s11, B[22] + 0.42, 1.08, { M: 2.7, cy: 200 }, 'none');
+move(s11, B[25], 0.5, { M: 2.74, cy: 320 }, 'power2.inOut');
+card('isolated box.<br><em>real terminal.</em>', 'plain', 84, 1150, B[22] + 0.25, B[26]);
+
+// ------------------------------------------------------------------- 4. the end
+endcard(tl, B[26], { hold: DUR - B[26], sub: 'Run it before you clone it.' });
+stage.insertAdjacentHTML('beforeend', '<div class="vignette" style="z-index:65;opacity:.55"></div><div class="grain"></div>');
+run(tl, DUR);
+</script>

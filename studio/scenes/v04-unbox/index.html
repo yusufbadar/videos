@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8">
+<!-- v04: the box opens. Footage underneath (lid lift, pop-up diorama, the real
+     code map); this layer is three short lines and the end card. -->
+<link rel="stylesheet" href="../../lib/brand.css">
+<div id="stage"><div class="vignette"></div></div>
+<script type="module">
+import { gsap, run } from '../../lib/stage.js';
+import { endcard, hook } from '../../lib/parts.js';
+const D = window.DATA;
+const tl = gsap.timeline({ paused: true });
+const line = (text, at, out) => hook(tl, text, { at, out, y: 286, size: 108, serif: true });
+line('every repo should open like this.', 0, D.cut1 - 0.25);
+line('no clone. no install.', D.cut1 + 0.25, D.cut2 - 0.3);
+const last = line('paste a link. it runs.', D.cut2 + 0.35, D.end - 0.1);
+endcard(tl, D.end, { fade: 0.35, hold: D.duration - D.end });
+document.getElementById('stage').insertAdjacentHTML('beforeend', '<div class="grain"></div>');
+run(tl, D.duration);
+</script>

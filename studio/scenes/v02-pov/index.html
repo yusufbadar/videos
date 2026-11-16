@@ -1,0 +1,34 @@
+<!doctype html><meta charset="utf-8">
+<!-- v02: "the README said two minutes". Footage underneath is four reaction
+     shots and a cutaway to the real box booting; one bar of music per beat.
+     This layer is the line for each beat, the address-bar trick and the end card. -->
+<link rel="stylesheet" href="../../lib/brand.css">
+<div id="stage"></div>
+<script type="module">
+import { gsap, run, el } from '../../lib/stage.js';
+import { endcard, hook, urlTrick } from '../../lib/parts.js';
+const D = window.DATA, bar = D.bar;           // one bar of the track, in seconds
+const tl = gsap.timeline({ paused: true });
+
+// A soft scrim behind the lines so they hold over bright footage.
+const scrim = el('div');
+scrim.style.cssText = 'position:absolute;left:0;right:0;top:0;height:760px;background:linear-gradient(rgba(2,2,3,.62),rgba(2,2,3,0));z-index:10';
+tl.set(scrim, { opacity: 0 }, D.end);
+
+const line = (text, n, size = 112, out) => hook(tl, text, { at: n * bar, out: out ?? (n + 1) * bar - 0.12, y: 270, size });
+line('README: "setup takes 2 minutes"', 0, 92);
+line('minute 47.', 1);
+line('hour 3.', 2);
+line('then: one link.', 3, 112, 3 * bar + D.trick - 0.05);
+line('it just ran.', 4, 112, D.end - 0.1);
+
+// The trick itself, on a plain page for the first part of bar four.
+const t0 = 3 * bar;
+const u = urlTrick(tl, t0 + 0.22, { repo: 'github.com/you/app', y: 900, size: 50, cps: 26 });
+u.style.opacity = 0;
+tl.set(u, { opacity: 1 }, t0).from(u, { y: 40, scale: 0.94, duration: 0.25, ease: 'pvPop' }, t0).set(u, { opacity: 0 }, t0 + D.trick);
+
+endcard(tl, D.end, { fade: 0.2, hold: D.duration - D.end });
+document.getElementById('stage').insertAdjacentHTML('beforeend', '<div class="grain"></div>');
+run(tl, D.duration);
+</script>
