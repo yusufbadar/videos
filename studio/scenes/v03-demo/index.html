@@ -26,7 +26,8 @@
   .ring { width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; border:5px solid var(--fg); opacity:0; }
   .ring.dark { border-color:var(--ink); }
   .tabring { border:4px solid var(--ice); border-radius:16px; background:rgba(188,214,255,.14); opacity:0; }
-  .scrim { position:absolute; left:0; right:0; top:0; height:760px; z-index:30; background:linear-gradient(to bottom, var(--void) 0, var(--void) 590px, rgba(24,26,31,0) 760px); }
+  .scrim { z-index:30; background:linear-gradient(to bottom, var(--void) 0, var(--void) 97%, rgba(24,26,31,0) 100%); }
+  .floor { position:absolute; left:0; right:0; bottom:0; height:260px; z-index:30; background:linear-gradient(to bottom, rgba(24,26,31,0) 0, var(--void) 62%); }
   .card { position:absolute; z-index:60; font-weight:800; letter-spacing:-0.03em; line-height:1.04; opacity:0; white-space:nowrap; }
   .card.pill { background:var(--black); color:var(--fg); font-size:92px; padding:26px 46px 34px 40px; border-radius:30px; box-shadow:0 24px 70px rgba(2,2,3,.38); }
   .card .dot { display:inline-block; width:30px; height:30px; border-radius:50%; background:var(--live); margin-right:26px; vertical-align:0.12em; }
@@ -95,6 +96,7 @@ function pointer(s, path, clicks = [], { dark = false } = {}) {
   const c = pin(s, document.createElement('div'), path[0][1], path[0][2]);
   c.node.innerHTML = `<div class="cursor">${ARROW}</div>`;
   const inner = c.node.firstChild;
+  c.node.style.opacity = 0; tl.set(c.node, { opacity: 1 }, path[0][0]);
   for (let i = 1; i < path.length; i++) tl.to(c, { x: path[i][1], y: path[i][2], duration: path[i][0] - path[i - 1][0], ease: 'power2.inOut' }, path[i - 1][0]);
   clicks.forEach((t) => {
     const p = path.filter((q) => q[0] <= t + 1e-6).pop();
@@ -124,11 +126,15 @@ function card(html, cls, x, y, at, until) {
 // pointer lands on "Run it" and the click is the cut on beat 4.
 const s1 = shot({ take: 'type', css: [600, 1068], cls: 'void', at: 0, until: B[4],
   frames: [[0, 20], [1.2, 63], [B[3], 75], [B[4], 90]],
-  cam: { M: 2.3, cx: 246, cy: 420, sx: 540, sy: 850, r: 0 } });
-el('div', 'scrim', '', s1.node);
-move(s1, 0, 2.0, { M: 2.62, cx: 428, cy: 436 }, 'power1.inOut');
-pointer(s1, [[0.95, 640, 640], [1.72, 524, 414]], [B[4] - 0.1]);
-const h = hook(tl, 'run it before you clone it.', { y: 268, size: 112, out: null });
+  cam: { M: 2.05, cx: 290, cy: 418, sx: 540, sy: 880, r: 0 } });
+// Everything above the field (nav, the page's own blurb) is matted out for the hook; the mat rides the camera.
+pin(s1, document.createElement('div'), -400, -800, 1400, 1182).node.classList.add('scrim');
+el('div', 'floor', '', s1.node);
+move(s1, 0, 1.25, { M: 2.2, cx: 318 }, 'power1.inOut');          // follow the typing
+move(s1, 1.25, 0.6, { M: 2.7, cx: 436 }, 'power2.inOut');        // swing to the button
+move(s1, 1.85, 0.15, { M: 2.76 }, 'none');
+pointer(s1, [[1.05, 640, 600], [1.76, 524, 417]], [B[4] - 0.1]);
+const h = hook(tl, 'run it before you clone it.', { y: 268, size: 128, out: null });
 h.querySelectorAll('.w')[2].style.color = 'var(--ice)';
 tl.set(h, { opacity: 0 }, B[4]);
 
@@ -140,9 +146,9 @@ move(s2, B[4], 0.38, { M: 3.0 });
 move(s2, B[4] + 0.38, 0.62, { M: 3.14 }, 'none');
 // 3.0 to 4.0: the checklist, three ticks on the sixteenths.
 const s3 = shot({ take: 'flowS', at: B[6], until: B[8], frames: [[B[6], 60], [B[6] + 0.25, 73], [B[7], 106], [B[7] + 0.25, 214], [B[8], 224]],
-  cam: { M: 2.5, cx: 172, cy: 205, sx: 500, sy: 800 } });
-move(s3, B[6], 0.3, { M: 2.95 });
-move(s3, B[6] + 0.3, 0.7, { M: 3.1, cy: 262 }, 'power1.inOut');
+  cam: { M: 2.7, cx: 160, cy: 250, sx: 500, sy: 835 } });
+move(s3, B[6], 0.3, { M: 3.25 });
+move(s3, B[6] + 0.3, 0.7, { M: 3.42, cy: 274 }, 'power1.inOut');
 // 4.0 to 7.0: launch and verify, then the app answers on beat 10.
 const s4 = shot({ take: 'flowP', at: B[8], until: B[14], frames: [[B[8], 214], [B[10], 277], [B[12], 323], [B[13], 338], [B[14], 353]],
   cam: { M: 3.5, cx: 270, cy: 590, sx: 480, sy: 850 } });
@@ -160,11 +166,11 @@ card('<span class="dot"></span>it\'s running.', 'pill', 100, 1150, B[10], B[14])
 // Tour, 7.0 to 8.0.
 const s5 = shot({ take: 'tabs', at: B[14], until: B[15], frames: [[B[14], 34], [B[15], 60]], cam: { ...WIDE } });
 tabHit(s5, B[14], [177, 58, 67, 32]);
-move(s5, B[14] + 0.08, 0.34, { M: 2.75, cx: 196, cy: 262, sx: 500, sy: 800 });
-move(s5, B[14] + 0.42, 0.08, { M: 2.78 }, 'none');
+move(s5, B[14] + 0.08, 0.34, { M: 2.7, cx: 208, cy: 290, sx: 540, sy: 800 });
+move(s5, B[14] + 0.42, 0.08, { M: 2.73 }, 'none');
 const s6 = shot({ take: 'tabs', at: B[15], until: B[16], frames: [[B[15], 178], [B[16], 200]], cam: { M: 2.2, cx: 250, cy: 330, sx: 500, sy: 800 } });
-move(s6, B[15], 0.3, { M: 2.62, cy: 400 });
-move(s6, B[15] + 0.3, 0.2, { M: 2.68 }, 'none');
+move(s6, B[15], 0.3, { M: 2.6, cx: 215, cy: 400, sx: 540 });
+move(s6, B[15] + 0.3, 0.2, { M: 2.66 }, 'none');
 // Map, 8.0 to 10.0: the graph lays itself out, then Layers on beat 18.
 const s7 = shot({ take: 'map', at: B[16], until: B[18], frames: [[B[16], 34], [B[18], 84]], cam: { ...WIDE } });
 tabHit(s7, B[16], [260, 58, 67, 32]);
@@ -172,7 +178,7 @@ move(s7, B[16] + 0.08, 0.36, { M: 2.5, cx: 190, cy: 505, sx: 500, sy: 830 });
 move(s7, B[16] + 0.44, 0.06, { M: 2.52 }, 'none');
 tl.set(s7.c, { M: 3.35, cx: 200, cy: 490 }, B[17]);           // jump cut closer on the beat
 move(s7, B[17], 0.5, { M: 3.6 }, 'none');
-const s8 = shot({ take: 'map', at: B[18], until: B[20], frames: [[B[18], 122], [B[20], 168]], cam: { M: 2.2, cx: 270, cy: 330, sx: 540, sy: 860, r: 0 } });
+const s8 = shot({ take: 'map', at: B[18], until: B[20], frames: [[B[18], 122], [B[20], 168]], cam: { M: 2.2, cx: 270, cy: 330, sx: 540, sy: 860 } });
 tabHit(s8, B[18], [373, 102, 40, 28]);
 move(s8, B[18], 0.5, { M: 2.3 }, 'none');
 tl.set(s8.c, { M: 3.0, cx: 150, cy: 300, sx: 480, sy: 820 }, B[19]);
@@ -184,18 +190,18 @@ move(s9, B[20] + 0.08, 0.32, { M: 2.9, cx: 170, cy: 250, sx: 500, sy: 800 });
 move(s9, B[20] + 0.4, 0.1, { M: 2.94 }, 'none');
 pointer(s9, [[B[20], 300, 420], [B[20] + 0.2, 80, 240], [B[20] + 0.3, 80, 240], [B[21] - 0.04, 110, 268]], [B[20] + 0.23, B[21] - 0.03]);
 const s10 = shot({ take: 'files', at: B[21], until: B[22], frames: [[B[21], 122], [B[22], 150]], cam: { M: 2.5, cx: 190, cy: 300, sx: 500, sy: 800 } });
-move(s10, B[21], 0.3, { M: 3.0, cx: 178, cy: 292 });
-move(s10, B[21] + 0.3, 0.2, { M: 3.06 }, 'none');
+move(s10, B[21], 0.3, { M: 2.8, cx: 186, cy: 292 });
+move(s10, B[21] + 0.3, 0.2, { M: 2.86 }, 'none');
 // Terminal, 11.0 to 13.0: a command per beat; the build finishes into the last hit.
 const s11 = shot({ take: 'term', at: B[22], until: B[26], frames: [[B[22], 8], [B[23], 46], [B[24], 87], [B[25], 121], [B[26] - 0.13, 206], [B[26], 212]], cam: { ...WIDE } });
 tabHit(s11, B[22], [300, 58, 78, 32]);
-move(s11, B[22] + 0.08, 0.34, { M: 2.62, cx: 203, cy: 150, sx: 540, sy: 560 });
-move(s11, B[22] + 0.42, 1.08, { M: 2.7, cy: 200 }, 'none');
-move(s11, B[25], 0.5, { M: 2.74, cy: 320 }, 'power2.inOut');
+move(s11, B[22] + 0.08, 0.34, { M: 2.86, cx: 194, cy: 150, sx: 540, sy: 560 });
+move(s11, B[22] + 0.42, 1.08, { M: 2.94, cy: 200 }, 'none');
+move(s11, B[25], 0.5, { M: 2.98, cy: 310 }, 'power2.inOut');
 card('isolated box.<br><em>real terminal.</em>', 'plain', 84, 1150, B[22] + 0.25, B[26]);
 
 // ------------------------------------------------------------------- 4. the end
 endcard(tl, B[26], { hold: DUR - B[26], sub: 'Run it before you clone it.' });
-stage.insertAdjacentHTML('beforeend', '<div class="vignette" style="z-index:65;opacity:.55"></div><div class="grain"></div>');
+stage.insertAdjacentHTML('beforeend', '<div class="vignette" style="z-index:65;opacity:.3"></div><div class="grain"></div>');
 run(tl, DUR);
 </script>
