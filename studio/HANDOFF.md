@@ -32,16 +32,26 @@ LOOKS I LIKE, IN ORDER
 4. Fashion-film realism: saturated colour, wide low angles, the look of Higgsfield's own showcase reels.
 5. Anime and animation styles (see the anime track below).
 
-THE PLAN
-Two tracks, spread across the time left.
-A. One preset reel every other day. 15 to 30 seconds, Seedance 2.5. Use Shorts Studio presets (/shorts and
-   /shorts/<slug>), Katana aura edits (/katana), Editorial Motion Graphics (/vox-mixed-media), and the Ads Studio
-   and Marketing Studio templates. Open the preset galleries, pick ones with high view and like counts, and tell
-   me which preset you chose and why before generating.
-B. Anime and animation reels on the days between. Genjutsu Styles (hand-painted cel animation, expressive 2D
-   animation, knitted yarn world, rounded toy CGI and the rest of that catalogue), /stickman-explainer,
-   /content-factory What If styles, faceless-video, /manga. Build these image-first so most of the work lands on
-   the unlimited image models, then animate only the shots that need motion.
+THE PLAN: FOUR VIDEOS A DAY, FOUR KINDS OF WORK
+Four slots a day, each made a different way so the credits last. Do them in this order; slots 2 to 4 are cheap
+and must never be skipped to pay for slot 1.
+Slot 1, the hero (the only expensive one). Odd days: a preset reel, 15 to 30 seconds, Seedance 2.5, through a
+  Shorts Studio preset (/shorts, /shorts/<slug>), a Katana aura edit (/katana), Editorial Motion Graphics
+  (/vox-mixed-media) or an Ads Studio or Marketing Studio template. Even days: an anime or animation hero, 10 to
+  20 seconds, through a Genjutsu Style, /content-factory What If style, /stickman-explainer or /manga. Open the
+  galleries, pick presets with high view and like counts, and tell me which and why.
+Slot 2, image-led animation. Storyboard 8 to 14 frames on the UNLIMITED image models in one anime or animation
+  style, then animate only the three or four shots that need movement with Kling 3.0 Turbo (5 s each) and hold
+  the rest as fast cuts, pushes and parallax. Cut to a generated track.
+Slot 3, stills only. A fast-cut slideshow, photo dump or kinetic-type piece made entirely from unlimited images
+  (15 to 30 of them) in one of the looks above, cut on the beat of a generated track. No video generation at all.
+Slot 4, the remix. Take something already made and get a second video out of it for almost nothing: a new
+  opening hook (/marketing-hook-variants), a regrade or relight (grade and lighting commands), a reel effect
+  (/text-behind, /grade-wipe), a different track and cut, or a 7 to 10 second loop from the best shot. Never post
+  a remix on the same day as its source.
+Assemble slots 2 to 4 with Higgsfield's own video-montage and video-editing workflows in the sandbox, following
+their caption and sound rules. Do not hand-roll a template.
+A day's four videos should look like four different things. Never two in the same style on one day.
 
 MONEY, AND WHAT IS FREE
 - Credits: 2,693 left as of 16 November. The Ultra subscription and its credits end on 30 November, so "the
@@ -56,13 +66,22 @@ MONEY, AND WHAT IS FREE
 - Measured prices: Seedance 2.5 is 7 credits a second at 720p and 16 at 1080p (15 s = 105 or 240; 30 s = 210 or
   480). Kling 3.0 Turbo is 7.5 for 5 s at 720p. Genjutsu on an 18 s clip is 54 at 480p, 126 at 720p, 360 at
   1080p. A 20 s ElevenLabs Music v2.5 track is about 3. A Nano Banana Pro 2K image is 2 on credits.
-- Budget: about 8 preset reels at an average of 170 credits is 1,360. About 7 anime or animation reels at 120 is
-  840. Hold 490 back for retakes. Use 720p unless I ask for 1080p. Run get_cost: true before every paid call,
-  tell me the estimate in one line, and keep a running total. Stop and ask if a single video would pass 250.
+- Budget for 15 days, 60 videos:
+    slot 1 preset reels, 8 at about 150            1,200
+    slot 1 anime or animation heroes, 7 at about 60  420
+    slot 2, 15 at about 28 (3 clips and a track)     420
+    slot 3, 15 at about 3 (a track)                   45
+    slot 4, 15 at about 8                            120
+    held back for retakes                            488
+  That is about 147 credits a day. Use 720p unless I ask for 1080p. Run get_cost: true before every paid call and
+  keep a running total with the day's spend against 147. If a day runs over, the next day's slot 1 becomes an
+  anime hero instead of a preset reel. Stop and ask if a single video would pass 250.
+- For December: on 28 to 30 November, spend what is left on extra slot 2 clips and unlimited images so there is
+  a bank to cut from after the subscription ends.
 
 HOW TO WORK
-1. Before each video: browse the relevant preset gallery, pick a preset, write a six-word hook and a short beat
-   list, quote the cost. Wait for my go on the first video of each track; after that just tell me and proceed.
+1. Each day starts with a one-screen plan: the four videos, the preset or style for each, a six-word hook each,
+   and the day's cost. Wait for my go on the first day; after that post the plan and proceed unless I object.
 2. Follow the preset's own instructions exactly (get_preset_instructions for slash commands,
    get_workflow_instructions for workflows). Generate the music first when the piece is cut to music and put every
    cut on a beat.
@@ -107,7 +126,7 @@ POSTING
   characters; tiktokData title, commercialContentOwnBrand true when the video promotes Pyrovue.
 - Set the AI flags (instagram isAiGenerated, tiktok isAigc, youtube isAiGeneratedContent) to true on anything with
   generated people or realistic generated scenes.
-- Best slots, Eastern: 10:52, 13:12, 19:07. One video a day at most under this plan.
+- Slots, Eastern: 08:42 (slot 4), 10:52 (slot 2), 13:12 (slot 3), 19:07 (slot 1, the hero, in the best slot).
 - Instagram can attach a native trending track through instagramData.audioConfiguration.audioId (a search term)
   if the account is linked to a Facebook Page. TikTok and Shorts uploads carry their own audio, so bake in a
   generated or licensed track there. Do not rip audio from other creators' reels.
@@ -117,9 +136,9 @@ POSTING
   unless I say otherwise. Old vidIQ posts also go out until 19 November and cannot be cancelled.
 
 FIRST TASK
-Open the Shorts Studio preset gallery and the Genjutsu Styles gallery. Come back with three preset picks for the
-first reel in the premium tech editorial look, each with a hook, a beat list and a cost at 720p, and three anime
-or animation style picks for the reel after it. Do not generate anything yet.
+Open the Shorts Studio preset gallery and the Genjutsu Styles gallery. Come back with day one's plan: three
+preset picks for the slot 1 reel in the premium tech editorial look (hook, beat list, cost at 720p), and one
+concept each for slots 2, 3 and 4 with its style and cost. Do not generate anything yet.
 ```
 
 ## Notes for whoever reads this later
